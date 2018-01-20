@@ -116,7 +116,6 @@ namespace DiscordBot
                   int randomMemeIndex = rand.Next(freshestMemes.Length);
                   string memeToPost = freshestMemes[randomMemeIndex];
                   await e.Channel.SendFile(memeToPost);
-                 // Console.WriteLine(e.User + " requested for the spicy " + memeToPost + " meme");
               });
         } //Dank memes
 
@@ -148,9 +147,6 @@ namespace DiscordBot
                     var toReturn = $"{e.GetArg("user")}";
 
                     await e.Channel.SendMessage(greetToPost + toReturn);
-                   // Console.WriteLine(e.User.Name + " Greeted " + toReturn);
-
-
                 });
         }//Greets the user that was mentioned
 
@@ -179,7 +175,6 @@ namespace DiscordBot
 
                     if (Admin == true) //Must have Admin priveleges to execute this command.
                     {
-
                         try
                         {
                             Discord.Role SearchRole = e.Server.FindRoles(RoleName).FirstOrDefault(); //Finds a certain role in the server.
@@ -189,13 +184,11 @@ namespace DiscordBot
                         {
                             await e.Channel.SendMessage("Role does not exist");
                         }
-                       // Console.WriteLine(SearchRole);
                     }
                     else
                     {
                         await e.Channel.SendMessage(":no_entry:You don't have the permissions to execute this command.:no_entry:");
                     }
-
                 });
         }
 
@@ -255,7 +248,6 @@ namespace DiscordBot
                     var ChannelManage = e.User.ServerPermissions.ManageChannels;
                     var Admin = e.User.ServerPermissions.Administrator;
 
-
                      if (Admin == true || ChannelManage == true) //Either have permissions to manage channels or to be an admin..
                      {
                          Message[] messageToDelete;
@@ -281,7 +273,6 @@ namespace DiscordBot
                     //The user's opponent
                     var opponent = $"{e.GetArg("Opponent")}";
 
-
                     Rand_roll = new Random();
                     int roll = Rand_roll.Next(1,100);   //First roll for the opponent or the single user, depending on the parameters.
                     int roll2 = Rand_roll.Next(1, 100); //Second roll
@@ -297,7 +288,6 @@ namespace DiscordBot
                         {
                             await e.Channel.SendMessage(":game_die: " + e.User.Mention + " has rolled : " + roll + ". Better luck next time");
                         }
-                       // Console.WriteLine(e.User.Mention + " has rolled : " + roll);
                     }
                     else
                     {
@@ -311,8 +301,6 @@ namespace DiscordBot
                             await e.Channel.SendMessage(":game_die: " + opponent + " has rolled: " + roll + ". \n:game_die:" +
                                  e.User.Mention + " has rolled " + roll2 + ". \n:medal:" + e.User.Mention + " has won.");
                         }
-                       /* Console.WriteLine(e.User.Mention + " has rolled : " + roll + "\n" + opponent + " has rolled : " +
-                        roll2);*/
                     }
 
                 });
@@ -347,7 +335,6 @@ namespace DiscordBot
                                 int Uses = 20;
                                 await e.Channel.CreateInvite( maxUses: Uses);
                             }
-
                             break;
                         default:            //Error if something went wrong with the parameters.
                             await e.Channel.SendMessage("An error has occured");
@@ -408,7 +395,6 @@ namespace DiscordBot
         //Console log
         private void Log(object sender, LogMessageEventArgs e)
         {
-            //Console.WriteLine(e.Message);
             Console.WriteLine($"[{e.Severity}] [{e.Source}] [{e.Message}]");
 
         }
