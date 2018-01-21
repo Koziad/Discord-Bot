@@ -15,8 +15,9 @@ namespace DiscordBot
         DiscordClient discord;
         CommandService commands;
 
-        Random rand; //Random Number gen
-        Random Rand_roll; //Random Dice Generator
+        // Random Number gen
+        Random rand;
+        Random Rand_roll;
 
         string[] randomGreetings;
         string[] randomTexts;
@@ -27,14 +28,16 @@ namespace DiscordBot
         {
             rand = new Random();
 
-            freshestMemes = new string[] //Array, Freshest memes. Add "Copy if new" if it's an image is recently added.
+            // Freshest memes.
+            freshestMemes = new string[]
             {
                 "Memes/imgres.jpg",
                 "Memes/scum.jpg",
                 "Memes/really.png"
             };
 
-            randomTexts = new string[] //Array, random text
+            // Random text
+            randomTexts = new string[]
             {
                 "Stop using this command",
                 "Some random text",
@@ -56,11 +59,12 @@ namespace DiscordBot
                 "Plz fix Miyazaki",
                 "It's definitely on the table",
                 "Ash seeketh ember",
-                 "Men are props on the stage of life, and no matter how tender, how exquisite… A LIE WILL REMAIN A LIE!",
+                "Men are props on the stage of life, and no matter how tender, how exquisite… A LIE WILL REMAIN A LIE!",
                  "Hmmmmm... Mhmmmm... Hmmmmmmmmmm...",
             };
 
-            randomGreetings = new string[] //Array, different greeting
+            // Different greetings
+            randomGreetings = new string[]
             {
                 "Hello ",
                 "Hi ",
@@ -74,7 +78,7 @@ namespace DiscordBot
                 x.LogHandler = Log;
             });
 
-            //Command prefix
+            // Command prefix
             discord.UsingCommands(x =>
             {
                 x.PrefixChar = '!';
@@ -82,24 +86,24 @@ namespace DiscordBot
                 x.HelpMode = HelpMode.Public;
             });
 
-            //Command lines
+            // Command lines
             commands = discord.GetService<CommandService>();
 
             /*              Command List          */
-            RegisterMemeCommand(); //The meme command.
-            RegisterTextCommand(); //The random text command.
-            GreetingsCommand();    //Greets back or greets the mentioned user.
-            BotGreeting();         //Greets the user back.
-            RolesCommand();        //Give a certain role to a user.
-            PingCommand();         //Ping/Pong command.
-            MeeseeksCommand();     //A Mr.Meeseeks Commands that uses a loop.
-            RegisterPurge();       //Purge at most 100 messages.
-            RegisterDice();        //A dice that will roll between 1 to 100.
-            RegisterInvite();      //A simple command to make an invite for users.
-            CreateChannel();       //Creates a text/voice channel, depends on the parameters.
-            CreateCommandList();   //Creates and sends a private message to the user containing a list of the commands.
+            RegisterMemeCommand(); // The meme command.
+            RegisterTextCommand(); // The random text command.
+            GreetingsCommand();    // Greets back or greets the mentioned user.
+            BotGreeting();         // Greets the user back.
+            RolesCommand();        // Give a certain role to a user.
+            PingCommand();         // Ping/Pong command.
+            MeeseeksCommand();     // A Mr.Meeseeks Commands that uses a loop.
+            RegisterPurge();       // Purge at most 100 messages.
+            RegisterDice();        // A dice that will roll between 1 to 100.
+            RegisterInvite();      // A simple command to make an invite for users.
+            CreateChannel();       // Creates a text/voice channel, depends on the parameters.
+            CreateCommandList();   // Creates and sends a private message to the user containing a list of the commands.
 
-            //Token
+            // Token
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect("", TokenType.Bot); //Bot Token here.....
@@ -107,6 +111,7 @@ namespace DiscordBot
 
         }
 
+        // Dank memes
         private void RegisterMemeCommand()
         {
             commands.CreateCommand("meme")
@@ -117,8 +122,9 @@ namespace DiscordBot
                   string memeToPost = freshestMemes[randomMemeIndex];
                   await e.Channel.SendFile(memeToPost);
               });
-        } //Dank memes
+        }
 
+        // Random text
         private void RegisterTextCommand()
         {
             commands.CreateCommand("text")
@@ -126,18 +132,21 @@ namespace DiscordBot
               .Parameter("user", ParameterType.Unparsed)
               .Do(async (e) =>
               {
-                  int randomTextIndex = rand.Next(randomTexts.Length); //Randomize the index
-                  string textToPost = randomTexts[randomTextIndex]; //Pick a random string from the array.
+                  // Randomize the index
+                  int randomTextIndex = rand.Next(randomTexts.Length);
+                  // Pick a random string from the array.
+                  string textToPost = randomTexts[randomTextIndex];
                   var toReturn = $"{e.GetArg("user")}";
 
                   await e.Channel.SendMessage(textToPost + toReturn);
               });
-        } //Random text.
+        }
 
+        // Greets the user that was mentioned
         private void GreetingsCommand()
         {
             commands.CreateCommand("hello")
-                .Alias(new string[] { "hi","hey" }) //Add aliases, so it will work with !hi or !gr
+                .Alias(new string[] { "hi","hey" })
                 .Description("Greets the person who is mentioned")
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
@@ -148,20 +157,23 @@ namespace DiscordBot
 
                     await e.Channel.SendMessage(greetToPost + toReturn);
                 });
-        }//Greets the user that was mentioned
+        }
 
-        private void BotGreeting() // Bot greets the user back if the target was the bot
+        // Bot greets the user back if the target was the bot
+        private void BotGreeting()
         {
             commands.CreateCommand("greet")
                 .Description("Greets the user back.")
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
-                    await e.Channel.SendMessage("Hello " + e.User.Mention); //It is a simple command....
+                    // It is a simple command....
+                    await e.Channel.SendMessage("Hello " + e.User.Mention);
                 });
         }
 
-        private void RolesCommand() //Role command.
+        // Role command.
+        private void RolesCommand()
         {
             commands.CreateCommand("Role")
                 .Description("Assign a role to a user")
@@ -173,11 +185,13 @@ namespace DiscordBot
                     var RoleName = $"{e.GetArg("role")}";
                     var Admin = e.User.ServerPermissions.Administrator;
 
-                    if (Admin == true) //Must have Admin priveleges to execute this command.
+                    // Must have Admin priveleges to execute this command.
+                    if (Admin)
                     {
                         try
                         {
-                            Discord.Role SearchRole = e.Server.FindRoles(RoleName).FirstOrDefault(); //Finds a certain role in the server.
+                            // Finds a certain role in the server.
+                            Discord.Role SearchRole = e.Server.FindRoles(RoleName).FirstOrDefault();
                             await e.User.AddRoles(SearchRole);
                         }
                         catch (Exception )
@@ -192,6 +206,7 @@ namespace DiscordBot
                 });
         }
 
+        // Do I have to explain this one?
         private void PingCommand()
         {
             commands.CreateCommand("ping")
@@ -200,9 +215,10 @@ namespace DiscordBot
                 {
                     await e.Channel.SendMessage(":ping_pong: Pong");
                 });
-        } //Do I have to explain this one?
+        }
 
-        private void MeeseeksCommand() //Keep it simple for a meeseek.
+        // Keep it simple for a meeseek.
+        private void MeeseeksCommand()
         {
             commands.CreateCommand("Meeseeks")
                 .Description("Makes trouble")
@@ -213,16 +229,19 @@ namespace DiscordBot
 
                     var toReturn = $"{e.GetArg("FirstUser")}";
                     var SecondUser = $"{e.GetArg("SecondUser")}";
+
                     for (int i = 1; i < 3 ; i++)
                     {
-                        if (SecondUser == "")       //Check if there is no second user in this cycle.
+                        // Check if there is no second user in this cycle.
+                        if (SecondUser == "")
                         {
                             await e.Channel.SendMessage("You have roped me into this. " + toReturn);
                             await e.Channel.SendMessage("No, he roped me into this. " + e.User.Mention);
                         }
                         else
                         {
-                            if (i == 2) //If the var in the loop reaches 2, change the outcome.
+                            // If the var in the loop reaches 2,change the outcome
+                            if (i == 2)
                             {
                                 await e.Channel.SendMessage("You have roped me into this. " + toReturn);
                                 await e.Channel.SendMessage("No, he roped me into this. " + e.User.Mention);
@@ -234,12 +253,16 @@ namespace DiscordBot
                             }
                         }
                     }
-                    await e.Channel.SendTTSMessage("EXISTENCE IS PAIN!"); //Send Speech message with a classic Rick and Morty Quote.
-                    await e.Channel.SendMessage("https://i.redd.it/kla43n9eb4az.jpg"); //Images will be a bit delayed, but it does the job.
+                    // Send Speech message with a classic Rick and Morty Quote.
+                    await e.Channel.SendTTSMessage("EXISTENCE IS PAIN!");
+
+                    //Images will be a bit delayed, but it does the job.
+                    await e.Channel.SendMessage("https://i.redd.it/kla43n9eb4az.jpg");
                 });
         }
 
-        private void RegisterPurge() //Delete 100 messages. MAX = 100 messages
+        // Delete 100 messages. MAX = 100 messages
+        private void RegisterPurge()
         {
             commands.CreateCommand("purge")
                 .Description("Deletes chat messages")
@@ -248,36 +271,45 @@ namespace DiscordBot
                     var ChannelManage = e.User.ServerPermissions.ManageChannels;
                     var Admin = e.User.ServerPermissions.Administrator;
 
-                     if (Admin == true || ChannelManage == true) //Either have permissions to manage channels or to be an admin..
-                     {
-                         Message[] messageToDelete;
-                         messageToDelete = await e.Channel.DownloadMessages(100);   //Download the last 100 messages
+                    // Either have permissions to manage channels or to be an admin
+                    if (Admin || ChannelManage )
+                    {
+                        Message[] messageToDelete;
+                        // Download the last 100 messages
+                        messageToDelete = await e.Channel.DownloadMessages(100);
 
-                         await e.Channel.DeleteMessages(messageToDelete);           //Delete the messages.
-                         await Task.Delay(2000);                                    //Add a delay to prevent an overload of requests.
-                     }
-                     else
-                     {
-                         await e.Channel.SendMessage(":no_entry:You don't have the permissions to execute this command.:no_entry:");
-                     }
+                        // Delete the messages.
+                        await e.Channel.DeleteMessages(messageToDelete);
+
+                        //Add a delay to prevent an overload of requests.
+                        await Task.Delay(2000);
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage(":no_entry:You don't have the permissions to execute this command.:no_entry:");
+                    }
                 });
         }
 
-        private void RegisterDice() //Time to get addicted to rolling the dices
+        // Time to get addicted to rolling the dices
+        private void RegisterDice()
         {
             commands.CreateCommand("dice")
                 .Description("Will roll a dice. 1 - 100")
                 .Parameter("Opponent",ParameterType.Optional)
                 .Do(async (e) =>
                 {
-                    //The user's opponent
+                    // The user's opponent
                     var opponent = $"{e.GetArg("Opponent")}";
 
                     Rand_roll = new Random();
-                    int roll = Rand_roll.Next(1,100);   //First roll for the opponent or the single user, depending on the parameters.
-                    int roll2 = Rand_roll.Next(1, 100); //Second roll
 
-                    //if there is no opponent and the user just wants to roll by himself
+                    // First roll for the opponent or the single user, depending on the parameters.
+                    int roll = Rand_roll.Next(1,100);
+                    //Second roll
+                    int roll2 = Rand_roll.Next(1, 100);
+
+                    // if there is no opponent and the user just wants to roll by himself
                     if(opponent == "")
                     {
                         if (roll >= 50)
@@ -306,7 +338,8 @@ namespace DiscordBot
                 });
         }
 
-        private void RegisterInvite() //Invite your friends
+        // Invite your friends
+        private void RegisterInvite()
         {
             commands.CreateCommand("inv")
                 .Description("Creates an invite")
@@ -319,10 +352,12 @@ namespace DiscordBot
 
                    switch (DurationType)
                     {
-                        case "max":         //An invite that never expires
+                        // An invite that never expires
+                        case "max":
                             await e.Channel.CreateInvite(maxAge: null,maxUses: null);
                             break;
-                        case "timer":       //Time limit invite with a certain amount of uses
+                        // Time limit invite with a certain amount of uses
+                        case "timer":
                             try
                             {
                                 var Duration = Int32.Parse($"{e.GetArg("Duration")}");
@@ -336,16 +371,19 @@ namespace DiscordBot
                                 await e.Channel.CreateInvite( maxUses: Uses);
                             }
                             break;
-                        default:            //Error if something went wrong with the parameters.
+                        // Error if something went wrong with the parameters.
+                        default:
                             await e.Channel.SendMessage("An error has occured");
                             break;
                     }
 
-                    await e.Channel.SendMessage("An invite has been created"); //Notify the user that it has been created.
+                   // Notify the user that it has been created.
+                   await e.Channel.SendMessage("An invite has been created");
                 });
         }
 
-        private void CreateChannel() //More typing, less clicking for a channel
+        // More typing, less clicking for a channel
+        private void CreateChannel()
         {
             commands.CreateCommand("CreateChannel")
                 .Description("Creates a channel")
@@ -353,9 +391,12 @@ namespace DiscordBot
                 .Parameter("Channel name", ParameterType.Optional)
                 .Do(async (e) =>
                 {
-                    var type = $"{e.GetArg("Channel type")}".ToLower(); //Make it lower case to prevent going to the default.
+                    // Make it lower case to prevent going to the default.
+                    var type = $"{e.GetArg("Channel type")}".ToLower();
+
                     var argument = $"{e.GetArg("Channel name")}";
-                    //Check the first parameter to decide if the user wants a Voice or Text channel.
+
+                    // Check the first parameter to decide if the user wants a Voice or Text channel.
                     switch(type)
                     {
                         case "voice":
@@ -371,7 +412,8 @@ namespace DiscordBot
                 });
         }
 
-        private void CreateCommandList() //CommandList
+        // Command list
+        private void CreateCommandList()
         {
             commands.CreateCommand("cmd")
                 .Description("Gives you a list with commands")
@@ -392,7 +434,7 @@ namespace DiscordBot
                 });
         }
 
-        //Console log
+        // Console log
         private void Log(object sender, LogMessageEventArgs e)
         {
             Console.WriteLine($"[{e.Severity}] [{e.Source}] [{e.Message}]");
